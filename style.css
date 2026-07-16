@@ -1,0 +1,46 @@
+:root {
+  --background: #FAFAF7;
+  --foreground: #1A1A18;
+  --card: #FFFFFF;
+  --muted: #F0EFEB;
+  --muted-foreground: #8A8A85;
+  --border: rgba(26, 26, 24, 0.08);
+  --primary: #1A1A18;
+  --primary-foreground: #FAFAF7;
+  --accent: #EDECE8;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.necta-word--marked {
+  text-decoration: underline wavy #D97706 !important;
+  cursor: pointer !important;
+  background-color: rgba(217, 119, 6, 0.08);
+}
+
+.necta-chat-balloon {
+  border-radius: 14px;
+}
+
+.necta-chat-balloon--user {
+  background: #EDECE8;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.necta-chat-balloon--error {
+  background: #FEF2F2;
+  color: #991B1B;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #8A8A85;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}

@@ -1,0 +1,42 @@
+{
+  "name": "necta",
+  "version": "0.1.0",
+  "description": "Necta — transforma qualquer página em anotações inteligentes",
+  "private": true,
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "plasmo build",
+    "package": "plasmo package"
+  },
+  "dependencies": {
+    "@plasmohq/messaging": "^0.7.0",
+    "@tiptap/core": "^3.27.4",
+    "@tiptap/extension-placeholder": "^3.27.4",
+    "@tiptap/pm": "^3.27.4",
+    "@tiptap/react": "^3.27.4",
+    "@tiptap/starter-kit": "^3.27.4",
+    "lucide-react": "^0.487.0",
+    "openai": "^6.47.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@plasmohq/parcel-config": "^0.42.0",
+    "@types/chrome": "^0.0.308",
+    "@types/react": "^18.3.22",
+    "@types/react-dom": "^18.3.5",
+    "autoprefixer": "^10.4.21",
+    "plasmo": "^0.90.5",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
+  },
+  "manifest": {
+    "name": "Necta",
+    "description": "Resuma qualquer página com IA Gemini",
+    "version": "0.1.0",
+    "permissions": [
+      "storage"
+    ]
+  }
+}

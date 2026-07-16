@@ -1,0 +1,11 @@
+node_modules/
+dist/
+build/
+*.zip
+.env
+.DS_Store
+mdsedocs/
+session-ses_0989.md
+
+# Plasmo
+.plasmo/
