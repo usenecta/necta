@@ -10,7 +10,8 @@ const handler: PlasmoMessaging.MessageHandler<
   try {
     const result = await client.chat.completions.create({
       model: MODEL,
-      messages: [{ role: "user", content: buildRefinePrompt(req.body!.instruction, req.body!.currentHTML) }]
+      messages: [{ role: "user", content: buildRefinePrompt(req.body!.instruction, req.body!.currentHTML) }],
+      max_tokens: 4000
     })
     const text = stripCodeBlocks(result.choices[0].message.content ?? "")
     if (text.startsWith("ERROR:")) {

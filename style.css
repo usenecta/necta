@@ -44,3 +44,16 @@
   height: 0;
   pointer-events: none;
 }
+
+.necta-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(252, 186, 37, 0.2);
+  border-top-color: #FCBA25;
+  border-radius: 50%;
+  animation: necta-spin 0.7s linear infinite;
+}
+
+@keyframes necta-spin {
+  to { transform: rotate(360deg); }
+}

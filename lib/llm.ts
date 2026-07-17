@@ -1,15 +1,15 @@
 import OpenAI from "openai"
 
 export const client = new OpenAI({
-  apiKey: process.env.PLASMO_PUBLIC_GITHUB_TOKEN!,
-  baseURL: "https://models.github.ai/inference",
+  apiKey: process.env.PLASMO_PUBLIC_OPENROUTER_KEY!,
+  baseURL: "https://openrouter.ai/api/v1",
   defaultHeaders: {
-    Accept: "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28"
+    "HTTP-Referer": "https://necta-extension.app",
+    "X-Title": "Necta"
   }
 })
 
-export const MODEL = "openai/gpt-4o-mini"
+export const MODEL = "google/gemini-2.5-flash"
 
 export function stripCodeBlocks(text: string): string {
   return text.replace(/^```html?\s*/i, "").replace(/\s*```\s*$/i, "").trim()

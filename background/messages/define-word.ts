@@ -11,7 +11,8 @@ const handler: PlasmoMessaging.MessageHandler<
     const result = await client.chat.completions.create({
       model: MODEL,
       messages: [{ role: "user", content: buildDefinePrompt(req.body!.word) }],
-      response_format: { type: "json_object" }
+      response_format: { type: "json_object" },
+      max_tokens: 500
     })
     const { definicao, exemplo } = JSON.parse(result.choices[0].message.content ?? "{}")
     res.send({ definicao, exemplo })

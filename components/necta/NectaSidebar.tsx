@@ -1,8 +1,8 @@
 import React, { useRef, useState, useCallback, useEffect } from "react"
 import { sendToBackground } from "@plasmohq/messaging"
-import { Loader2, Send } from "lucide-react"
 import NectaEditor, { type NectaEditorHandle } from "./NectaEditor"
 import NectaLogo from "./NectaLogo"
+import BeeLoader from "./BeeLoader"
 import WordPopup from "./WordPopup"
 import { extractPageContent } from "../../lib/extractContent"
 import type {
@@ -25,6 +25,7 @@ const NectaSidebar: React.FC = () => {
   const [popup, setPopup] = useState<WordPopupState | null>(null)
   const [popupData, setPopupData] = useState<WordPopupData | null>(null)
   const [loadingDef, setLoadingDef] = useState(false)
+  const [truncated, setTruncated] = useState(false)
 
   const feedRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -36,14 +37,16 @@ const NectaSidebar: React.FC = () => {
 
   const handleNecta = useCallback(async () => {
     setStatus("summarizing")
+    setTruncated(false)
     try {
       const pageText = extractPageContent()
-      const { html } = await sendToBackground<
+      const { html, truncated } = await sendToBackground<
         { pageText: string },
         SummarizeResponse
       >({ name: "summarize", body: { pageText } })
       const entry: FeedEntry = { type: "ai", id: `e-${++idCounter}`, html }
       setEntries((prev) => [...prev, entry])
+      setTruncated(!!truncated)
       setStatus("summary")
     } catch {
       setStatus("error")
@@ -148,15 +151,18 @@ const NectaSidebar: React.FC = () => {
   return (
     <div
       className="flex flex-col h-full bg-background text-foreground"
-      style={{ width: 360 }}
+      style={{ width: 380 }}
     >
-      <header className="flex items-center h-12 px-4 border-b border-border shrink-0">
-        <NectaLogo size={16} />
+      <header
+        className="flex items-center gap-2 h-14 px-4 shrink-0"
+        style={{ background: "#FCBA25" }}
+      >
+        <NectaLogo size={24} />
         <span
-          className="ml-2 text-[13px] font-mono font-medium"
-          style={{ fontFamily: "'DM Mono', monospace", letterSpacing: "-0.01em" }}
+          className="text-[15px] font-medium text-[#1A1A18] leading-none"
+          style={{ fontFamily: "'Press Start 2P', monospace", letterSpacing: "-0.01em", marginTop: 2 }}
         >
-          Necta
+          NECTA
         </span>
       </header>
 
@@ -167,12 +173,16 @@ const NectaSidebar: React.FC = () => {
 
         {(status === "summarizing" || status === "summary" || status === "chatting") && (
           <div ref={feedRef} className="flex-1 overflow-y-auto flex flex-col">
-            {status === "summarizing" && entries.length === 0 && (
-              <div className="flex items-center justify-center h-full px-8 text-center">
-                <p className="text-[13.5px] text-muted-foreground">
-                  Lendo a página e gerando seu resumo...
+            {truncated && (
+              <div className="px-4 pt-3 pb-1">
+                <p className="text-[11.5px] text-amber-700 leading-relaxed">
+                  Página muito extensa — o resumo considera apenas o conteúdo principal.
                 </p>
               </div>
+            )}
+
+            {status === "summarizing" && entries.length === 0 && (
+              <BeeLoader />
             )}
 
             {entries.map((entry, i) => {
@@ -233,17 +243,38 @@ const NectaSidebar: React.FC = () => {
                 placeholder="Deixe menor, organize em tópicos, traduza..."
                 disabled={status === "chatting"}
                 rows={1}
-                className="flex-1 bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground resize-none focus:outline-none leading-normal max-h-20"
+                className="flex-1 bg-transparent text-[12px] text-foreground placeholder:text-muted-foreground resize-none focus:outline-none leading-normal max-h-20"
               />
               <button
                 onClick={handleSendChat}
                 disabled={!chatInput.trim() || status === "chatting"}
-                className="text-muted-foreground disabled:opacity-25 hover:text-foreground transition-colors shrink-0"
+                className="flex items-center justify-center shrink-0 rounded-lg disabled:opacity-25 transition-opacity"
+                style={{
+                  width: 32,
+                  height: 32,
+                  background: status === "chatting" ? "transparent" : "#FCBA25"
+                }}
               >
                 {status === "chatting" ? (
-                  <Loader2 size={16} className="animate-spin" />
+                  <div
+                    className="necta-spinner"
+                    style={{ width: 16, height: 16, borderWidth: 2 }}
+                  />
                 ) : (
-                  <Send size={16} />
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M8 13V3M8 3L3 8M8 3L13 8"
+                      stroke="white"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
                 )}
               </button>
             </div>
@@ -261,10 +292,13 @@ const NectaSidebar: React.FC = () => {
           <button
             onClick={handleNecta}
             disabled={status === "summarizing"}
-            className="flex items-center justify-center gap-2 w-full h-9 rounded-md bg-primary text-primary-foreground text-[13.5px] font-medium hover:opacity-[0.88] active:scale-[0.985] transition-all disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed disabled:hover:opacity-100 disabled:active:scale-100"
+            className="flex items-center justify-center w-full h-9 rounded-md bg-primary text-primary-foreground text-[13.5px] font-medium hover:opacity-[0.88] active:scale-[0.985] transition-all disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed disabled:hover:opacity-100 disabled:active:scale-100"
           >
-            <NectaLogo size={14} />
-            <span>Necta</span>
+            {status === "summarizing" ? (
+              <span>Lendo a página e gerando seu resumo...</span>
+            ) : (
+              <span>Obter o néctar</span>
+            )}
           </button>
         )}
       </footer>
@@ -274,16 +308,25 @@ const NectaSidebar: React.FC = () => {
 
 const EmptyState: React.FC = () => (
   <div className="flex flex-col items-center justify-center h-full px-8 text-center">
-    <NectaLogo size={28} opacity={0.4} />
-    <p className="mt-4 text-[13.5px] font-medium text-foreground">
-      Clique em Necta para resumir esta página.
+    <NectaLogo size={28} opacity={0.2} />
+    <p className="mt-1 text-[14.5px] font-medium text-foreground">
+      Clique em Obter o néctar para resumir esta página.
     </p>
     <p
-      className="mt-2 text-[12.5px] text-muted-foreground"
-      style={{ maxWidth: 220 }}
+      className="mt-2 text-[13px] text-muted-foreground leading-relaxed"
+      style={{ maxWidth: 240 }}
     >
       O Necta vai ler a página atual e gerar anotações editáveis para você.
     </p>
+    <div className="mt-5 text-[12.5px] text-left text-muted-foreground leading-relaxed" style={{ maxWidth: 240 }}>
+      <p className="mb-1.5 font-medium text-foreground/60">Dicas:</p>
+      <ul className="list-disc list-inside space-y-1">
+        <li>Use ## ou ### para títulos e subtítulos</li>
+        <li>Use – para criar marcadores</li>
+        <li>Edite o texto a qualquer momento</li>
+        <li>Arraste o mouse sobre uma palavra ou frase para ver sua definição e um exemplo</li>
+      </ul>
+    </div>
   </div>
 )
 

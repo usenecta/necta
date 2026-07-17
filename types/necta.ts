@@ -17,6 +17,7 @@ export interface SummarizeRequest {
 
 export interface SummarizeResponse {
   html: string
+  truncated?: boolean
 }
 
 export interface RefineRequest {

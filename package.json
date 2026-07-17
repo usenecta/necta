@@ -35,6 +35,9 @@
     "name": "Necta",
     "description": "Resuma qualquer página com IA Gemini",
     "version": "0.1.0",
+    "host_permissions": [
+      "<all_urls>"
+    ],
     "permissions": [
       "storage"
     ]

@@ -15,8 +15,19 @@ export const getStyle = () => {
   return style
 }
 
+const FONT_URL = "https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+
 const NectaSidebarWrapper = () => {
   const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (!document.querySelector(`link[href="${FONT_URL}"]`)) {
+      const link = document.createElement("link")
+      link.rel = "stylesheet"
+      link.href = FONT_URL
+      document.head.appendChild(link)
+    }
+  }, [])
 
   useEffect(() => {
     const handler = (msg: any, _sender: any, sendResponse: any) => {
@@ -39,7 +50,7 @@ const NectaSidebarWrapper = () => {
       id="necta-sidebar"
       className="fixed top-0 right-0 h-full overflow-hidden"
       style={{
-        width: 360,
+        width: 380,
         fontFamily: "Inter, system-ui, sans-serif",
         zIndex: 2147483647
       }}
